@@ -1,2 +1,0 @@
-# xenomai
-Embarqué
