@@ -20,11 +20,18 @@ int sid;
 
 static void f_task(void *arg)
 {
-volatile unsigned int i=0;
-unsigned int n=0;
-unsigned long int out=0;
-unsigned long long int start = 0;
-RT_TIMER_INFO timer_info;
+    volatile unsigned int i=0;
+    unsigned int n=0;
+    unsigned long int out=0;
+    unsigned long long int start = 0;
+    RT_TIMER_INFO timer_info;
+
+    unsigned long long int time = 0;
+    struct timeval timenow;
+    double timesec = 0;
+    char sec[100];
+    double t0 = 0;
+    int first = 0;
 
   if (rt_task_set_periodic(
       NULL,   /* la tache courrante */
@@ -36,20 +43,32 @@ RT_TIMER_INFO timer_info;
   }
 
   rt_timer_inquire(&timer_info);
-  start = timer_info.date/C1SEC;
-  unsigned long long int time = 0;
+  start = timer_info.date / C1SEC;
+  // start = timer_info.date;
+  //
+
 
   while (n<130) { //130 périodes
     /* secondary mode */
     rt_timer_inquire(&timer_info);
 
     /* Affiche un message toutes les secondes */
-    time = timer_info.date/C1SEC;
-    char str[15];
-    sprintf(str, "%d", time);
-    if (sendto(sid,(str),strlen(str),0,(struct sockaddr *)&Sock,
+    // Récupère la donnée
+    gettimeofday(&timenow, NULL);
+
+    // Temps en seconde
+    if(first == 0)
+    {
+        t0 = timenow.tv_sec + (timenow.tv_usec / 1000000.0);
+        first++;
+    }
+
+    timesec = timenow.tv_sec + (timenow.tv_usec / 999998.0) - t0;
+    sprintf(sec,"%d",timesec);
+
+    if (sendto(sid,(sec),strlen(sec),0,(struct sockaddr *)&Sock,
                            sizeof(Sock))==-1) {
-        perror("sendto");
+        perror("ERREUR sendto");
         return(4);
     }
     printf("Envoi OK !\n");
@@ -83,7 +102,7 @@ int main(int N, char*P[])
     }
     /* creation du socket */
     if ((sid=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP)) < 0) {
-        perror("socket");
+        perror("ERREUR socket");
         return(2);
     }
     /* recuperation adresse du serveur */
@@ -99,7 +118,7 @@ int main(int N, char*P[])
 
     if (sendto(sid,("Good"),strlen("Good"),0,(struct sockaddr *)&Sock,
                            sizeof(Sock))==-1) {
-        perror("sendto");
+        perror("ERREUR sendto");
         return(4);
     }
     printf("Envoi OK !\n");
@@ -118,7 +137,7 @@ int main(int N, char*P[])
 
     if (sendto(sid,("FIN"),strlen("FIN"),0,(struct sockaddr *)&Sock,
                            sizeof(Sock))==-1) {
-        perror("sendto");
+        perror("ERREUR sendto");
         return(4);
     }
     printf("Envoi OK !\n");
