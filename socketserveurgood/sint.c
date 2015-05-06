@@ -1,16 +1,19 @@
-/* sint.c
- * exemple pour TP Xenomai
- * pour compiler : cc -o sint sint.c -lm
- * *************************************/
+/* sint.c */
 
+/* Importation */
 #include "sint.h"
 
+/* Declaration des variables globales */
 int fid;
 
+/* Ecriture des méthodes */
+
+// Méthode d'écriture
 void ecritfic(char * b) {
 	write(fid,b,strlen(b));
 }
 
+// Méthode de création du fichier
 void creationFichier() {
     char buf[100];
 
@@ -19,19 +22,20 @@ void creationFichier() {
         exit(1);
     }
 
-    sprintf(buf,"TitleText: Test de sinus\n\"Sin(t)\n");
+    sprintf(buf,"TitleText: Sinusoïde\n\"Horloge Xenomai\n");
     ecritfic(buf);
 }
 
+// Méthode de fermeture du fichier
 void fermerFichier() {
 	ecritfic("\n");
 	close(fid);
 }
 
+// Méthode d'écriture dans le fichier
 void construction(double timer) {
     char buf[100];
 
     sprintf(buf,"%f, %g\n",timer,sin(timer));
-    printf("%f, %g\n",timer,sin(timer));
     ecritfic(buf);
 }
