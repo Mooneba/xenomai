@@ -38,5 +38,5 @@ $socketserveurgood > cd xgraph
 $socketserveurgood/xgraph > ./xgraph ../sint.gx
 ```
 
-## Résultat souhaitée
+## Résultat souhaité
 ![Image of Sint]
