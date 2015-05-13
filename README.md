@@ -39,4 +39,4 @@ $socketserveurgood/xgraph > ./xgraph ../sint.gx
 ```
 
 ## Résultat souhaité
-![Image of Sint]
+![Image of Sint](https://github.com/Mooneba/xenomai/blob/master/image.png)
